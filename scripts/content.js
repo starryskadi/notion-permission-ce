@@ -69,9 +69,11 @@ const obeserver = new MutationObserver((mutations) => {
               );
               const spaces = await spacesRes.json();
 
-              const spacesEntries = Object.entries(spaces)[0];
-              const spaceEntries = Object.entries(spacesEntries[1].space)[0];
-              const spaceID = spaceEntries[0];
+              // const spacesEntries = Object.entries(spaces)[0];
+              // const spaceEntries = Object.entries(spacesEntries[1].space)[0];
+              // const spaceID = spaceEntries[0];
+
+              // console.log(spaces);
 
               // Get Notion Post ID
               const page = new URL(window.location).pathname;
@@ -84,6 +86,43 @@ const obeserver = new MutationObserver((mutations) => {
                 20
               )}-${pageCombined.slice(20)}`;
 
+              const spacePayload = {
+                type: "block-space",
+                name: "page",
+                blockId: pageID,
+                spaceDomain: "visibleone",
+                showMoveTo: false,
+                saveParent: false,
+                shouldDuplicate: false,
+                projectManagementLaunch: false,
+                requestedOnPublicDomain: false,
+                configureOpenInDesktopApp: false,
+                mobileData: { isPush: false },
+              };
+
+              const publicDataRes = await fetch(
+                "https://www.notion.so/api/v3/getPublicPageData",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(spacePayload),
+                }
+              );
+              const publicData = await publicDataRes.json();
+              const spaceID = publicData.spaceId;
+              const activeSpace = Object.entries(spaces).filter((each) => {
+                if (each[1].space) {
+                  if (Object.keys(each[1].space)[0] == spaceID) {
+                    // console.log("spaceFilter", each);
+                    return true;
+                  }
+                }
+              });
+
+              const activeUser = Object.keys(activeSpace[0][1].notion_user)[0];
+
               // Get Visible Users
               const visibleUsersPayload = {
                 spaceId: spaceID,
@@ -95,6 +134,7 @@ const obeserver = new MutationObserver((mutations) => {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
+                    "x-notion-active-user-header": activeUser,
                   },
                   body: JSON.stringify(visibleUsersPayload),
                 }
@@ -102,7 +142,6 @@ const obeserver = new MutationObserver((mutations) => {
               const visibleUser = await visibleUserRes.json();
 
               const requestID = generateUUID();
-              const pointerID = generateUUID();
 
               const transactions = visibleUser.users
                 .filter((user) => {
@@ -112,6 +151,7 @@ const obeserver = new MutationObserver((mutations) => {
                   return user.guestPageIds.includes(pageID);
                 })
                 .map((user) => {
+                  const pointerID = generateUUID();
                   return {
                     id: pointerID,
                     spaceId: spaceID,
@@ -149,6 +189,7 @@ const obeserver = new MutationObserver((mutations) => {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
+                  "x-notion-active-user-header": activeUser,
                 },
                 body: JSON.stringify(permissionPayload),
               });
