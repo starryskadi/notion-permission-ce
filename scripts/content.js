@@ -69,15 +69,27 @@ const obeserver = new MutationObserver((mutations) => {
               );
               const spaces = await spacesRes.json();
 
+              // if (!spaceID) {
               // const spacesEntries = Object.entries(spaces)[0];
               // const spaceEntries = Object.entries(spacesEntries[1].space)[0];
-              // const spaceID = spaceEntries[0];
+              // spaceID = spaceEntries[0];
+              // }
 
               // console.log(spaces);
 
               // Get Notion Post ID
-              const page = new URL(window.location).pathname;
-              const pageCombined = page.slice(page.lastIndexOf("-") + 1);
+              const url = new URL(window.location);
+
+              let pageCombined = "";
+              if (url.searchParams.get("p")) {
+                pageCombined = url.searchParams.get("p");
+              } else if (url.searchParams.get("v")) {
+                pageCombined = url.searchParams.get("v");
+              } else {
+                let page = url.pathname;
+                pageCombined = page.slice(page.lastIndexOf("-") + 1);
+              }
+
               const pageID = `${pageCombined.slice(0, 8)}-${pageCombined.slice(
                 8,
                 12
@@ -90,7 +102,7 @@ const obeserver = new MutationObserver((mutations) => {
                 type: "block-space",
                 name: "page",
                 blockId: pageID,
-                spaceDomain: "visibleone",
+                spaceDomain: "",
                 showMoveTo: false,
                 saveParent: false,
                 shouldDuplicate: false,
@@ -112,6 +124,7 @@ const obeserver = new MutationObserver((mutations) => {
               );
               const publicData = await publicDataRes.json();
               const spaceID = publicData.spaceId;
+
               const activeSpace = Object.entries(spaces).filter((each) => {
                 if (each[1].space) {
                   if (Object.keys(each[1].space)[0] == spaceID) {
@@ -121,6 +134,7 @@ const obeserver = new MutationObserver((mutations) => {
                 }
               });
 
+              // console.log(publicData, activeSpace);
               const activeUser = Object.keys(activeSpace[0][1].notion_user)[0];
 
               // Get Visible Users
