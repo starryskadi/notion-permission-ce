@@ -1,4 +1,4 @@
-function generateUUID() {
+const generateUUID = () => {
   // Public Domain/MIT
   var d = new Date().getTime(); //Timestamp
   var d2 =
@@ -19,15 +19,13 @@ function generateUUID() {
     }
     return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
   });
-}
+};
 
 const obeserver = new MutationObserver((mutations) => {
-  //   console.log(mutations);
   mutations.map((mutation) => {
     const targetEle = mutation.target;
     if (targetEle) {
       if (targetEle.classList.contains("notion-overlay-container")) {
-        // Overlay is added
         try {
           const shareMenu = document.querySelector(".notion-share-menu");
           const shareMenuContainer = shareMenu.querySelector(
@@ -69,15 +67,6 @@ const obeserver = new MutationObserver((mutations) => {
               );
               const spaces = await spacesRes.json();
 
-              // if (!spaceID) {
-              // const spacesEntries = Object.entries(spaces)[0];
-              // const spaceEntries = Object.entries(spacesEntries[1].space)[0];
-              // spaceID = spaceEntries[0];
-              // }
-
-              // console.log(spaces);
-
-              // Get Notion Post ID
               const url = new URL(window.location);
 
               if (url.searchParams.get("p")) {
@@ -128,23 +117,13 @@ const obeserver = new MutationObserver((mutations) => {
               let activeSpace = Object.entries(spaces).filter((each) => {
                 if (each[1].space) {
                   if (Object.keys(each[1].space)[0] == spaceID) {
-                    // console.log("spaceFilter", each);
                     return true;
                   }
                 }
               });
 
-              // if (!spaceID) {
-              //   const spacesEntries = Object.entries(spaces)[0];
-              //   const spaceEntries = Object.entries(spacesEntries[1].space)[0];
-              //   console.log(spacesEntries[1]);
-              //   spaceID = spaceEntries[0];
-              //   activeSpace = Object.entries(spaces);
-              // }
-
               const activeUser = Object.keys(activeSpace[0][1].notion_user)[0];
 
-              // Get Visible Users
               const visibleUsersPayload = {
                 spaceId: spaceID,
               };
@@ -183,7 +162,6 @@ const obeserver = new MutationObserver((mutations) => {
                       {
                         pointer: {
                           table: "block",
-                          // id: "5b707fa4-c3d4-484c-a43b-944f816be252",
                           id: pageID,
                           spaceId: spaceID,
                         },
