@@ -80,11 +80,11 @@ const obeserver = new MutationObserver((mutations) => {
               // Get Notion Post ID
               const url = new URL(window.location);
 
-              let pageCombined = "";
               if (url.searchParams.get("p")) {
                 pageCombined = url.searchParams.get("p");
-              } else if (url.searchParams.get("v")) {
-                pageCombined = url.searchParams.get("v");
+              } else if (url.pathname.lastIndexOf("-") === -1) {
+                // Table Page View
+                pageCombined = url.pathname.split("/")[1];
               } else {
                 let page = url.pathname;
                 pageCombined = page.slice(page.lastIndexOf("-") + 1);
@@ -123,9 +123,9 @@ const obeserver = new MutationObserver((mutations) => {
                 }
               );
               const publicData = await publicDataRes.json();
-              const spaceID = publicData.spaceId;
+              let spaceID = publicData.spaceId;
 
-              const activeSpace = Object.entries(spaces).filter((each) => {
+              let activeSpace = Object.entries(spaces).filter((each) => {
                 if (each[1].space) {
                   if (Object.keys(each[1].space)[0] == spaceID) {
                     // console.log("spaceFilter", each);
@@ -134,7 +134,14 @@ const obeserver = new MutationObserver((mutations) => {
                 }
               });
 
-              // console.log(publicData, activeSpace);
+              // if (!spaceID) {
+              //   const spacesEntries = Object.entries(spaces)[0];
+              //   const spaceEntries = Object.entries(spacesEntries[1].space)[0];
+              //   console.log(spacesEntries[1]);
+              //   spaceID = spaceEntries[0];
+              //   activeSpace = Object.entries(spaces);
+              // }
+
               const activeUser = Object.keys(activeSpace[0][1].notion_user)[0];
 
               // Get Visible Users
