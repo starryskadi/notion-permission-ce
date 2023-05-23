@@ -42,9 +42,11 @@ const obeserver = new MutationObserver((mutations) => {
             newButton.style.color = "white";
             newButton.style.border = "0px";
             newButton.style.padding = "10px 15px";
-            newButton.style.borderRadius = "5px";
+            // newButton.style.borderRadius = "5px";
+            newButton.style.marginLeft = "0px";
             newButton.style.fontSize = "14px";
             newButton.style.fontWeight = "bold";
+            newButton.style.width = "100%";
 
             shareMenuContainer.insertBefore(
               newButton,
@@ -177,6 +179,23 @@ const obeserver = new MutationObserver((mutations) => {
                     ],
                   };
                 });
+
+              // TODO: Add Restrict Function
+              // transactions.push({
+              //   pointer: {
+              //     table: "block",
+              //     id: pageID,
+              //     spaceId: spaceID,
+              //   },
+              //   command: "setSingletonPermissionItem",
+              //   path: ["permissions"],
+              //   args: {
+              //     singletonPermissionItem: {
+              //       type: "restricted_permission",
+              //     },
+              //     set: false,
+              //   },
+              // });
 
               // Permission Edit
               const permissionPayload = {
