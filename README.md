@@ -18,4 +18,4 @@
 5. Go to notion.so and remove permission inheritenance
 6. Click the button.
 
-![Alt text](/image/inaction.jpg "Permission In Action")
+![Alt text](/image/inaction.png "Permission In Action")
